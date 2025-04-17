@@ -1,8 +1,9 @@
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-#Copy maven build jar file
+# copy maven build jar file
 COPY /target/user-service-1.0-SNAPSHOT.jar app.jar
-#Expose the app
+COPY src/main/resources/static/ /app/static/
+# expose the app
 EXPOSE 8080
-#Run jar file
+# Run jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

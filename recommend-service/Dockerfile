@@ -1,23 +1,31 @@
-# Build stage
- FROM golang:1.22-alpine AS builder
- WORKDIR /app
- 
- # Copy go.mod and go.sum first to leverage caching
- COPY go.mod go.sum ./
- RUN go mod download
- 
- # Copy source files and build the application
- COPY . .
- # Go binary with static linking
- RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o recommend-service .
- 
- # Final stage with minimal image
- FROM alpine:latest
- WORKDIR /app
- 
- # Copy built binary from builder stage
- COPY --from=builder /app/recommend-service .
- 
- # Expose port and set entrypoint
- EXPOSE 8081
- ENTRYPOINT ["/app/recommend-service"]
+# Use the official Golang image as the base image
+FROM golang:1.22-alpine AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Go mod and sum files to download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the application files
+COPY . .
+
+# Build the Go application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o recommend-service .
+
+# Use a minimal base image to run the application
+FROM alpine:latest
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built Go binary from the builder image
+COPY --from=builder /app/recommend-service .
+
+# Expose the port the service will run on
+EXPOSE 8081
+
+# Set the entrypoint to run the Go service
+ENTRYPOINT ["/app/recommend-service"]
+

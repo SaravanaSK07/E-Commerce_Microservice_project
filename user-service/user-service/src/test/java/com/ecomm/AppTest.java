@@ -1,13 +1,12 @@
 package com.ecomm;
 
-import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AppTest {
-
     @Test
     public void testApp() {
-        assertTrue(true);  // Dummy test
+        assertTrue(true);
     }
 }
 
